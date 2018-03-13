@@ -70,7 +70,7 @@ class RsyncModule():
             in a datetime object) and *filename* (The file's name).
         """
         # See http://stackoverflow.com/questions/10323060/printing-file-permissions-like-ls-l-using-stat2-in-c for modes
-        RE_LINE = re.compile("^([ldcbps-]([r-][w-][x-]){3})\s+([0-9]+)\s+([0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}) (.*)$")
+        RE_LINE = re.compile("^([ldcbps-]([r-][w-][x-]){3})\s+([\d,]+)\s+([0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}) (.*)$")
         remote_url = self._remote_url + path
         try:
             cmdline = ["rsync", "--list-only", remote_url]
@@ -86,7 +86,7 @@ class RsyncModule():
 
                 listing.append({
                         "attrs": self._parse_attrs(match.group(1)),
-                        "size": int(match.group(3)),
+                        "size": int(match.group(3).replace(',','')),
                         "timestamp": datetime.datetime.strptime(match.group(4), "%Y/%m/%d %H:%M:%S"),
                         "filename": match.group(5)
                         })
